@@ -1,0 +1,12 @@
+---
+
+- name: Cloning project to remote host
+  git:
+    repo: https://github.com/brunovitorprado/stock-portifolio-microservice
+    dest: /var/webapp/stock
+    force: yes
+- name: Installing packages for Equity service
+  npm:
+    path: /var/webapp/stock/stock-portifolio-microservice/equity-processor-api/src
+- name: Starting webapp
+  command: /var/webapp/stock/stock-portifolio-microservice/equity-processor-api/src npm start

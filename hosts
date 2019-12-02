@@ -1,0 +1,4 @@
+[local]
+localhost ansible_connection=local ansile_python_interpreter=python gather_facts=false
+
+[stock-exchange]
