@@ -1,0 +1,42 @@
+---
+
+- name: Install Packages
+  apt: name={{ item }} update_cache=yes state=latest
+  with_items:
+    - build-essential
+    - npm
+    - nodejs
+    - git
+    - mcrypt
+    - nginx
+    - curl
+
+- name: Install pm2
+  npm: name=pm2 global=yes production=yes
+
+- name: Create APP Directory
+  file: path={{homeDir}}/{{appDir}} state=directory
+
+- name: Copy Private Key
+  copy: src={{privateKey}} dest={{homeDir}} mode=0600
+
+- name: Cloning project to remote host
+  git:
+    repo: https://github.com/brunovitorprado/stock-portifolio-microservice
+    dest: "{{homeDir}}/{{appDir}}"
+    force: yes
+  register: git_finished
+
+- name: Running NPM install
+  npm: path={{homeDir}}/{{appDir}}
+  register: npm_finished
+  when: git_finished.changed
+
+- name: Stop APP
+  command: pm2 stop app chdir={{homeDir}}/{{appDir}}
+  ignore_errors: yes
+
+- name: Start APP
+  command: pm2 start index.js --name app chdir={{homeDir}}/{{appDir}}
+  ignore_errors: yes
+  when: npm_finished.changed

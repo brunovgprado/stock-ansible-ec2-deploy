@@ -1,2 +1,7 @@
 ---
 # vars file for deploy
+homeDir: "."
+appDir : stock
+repo: stock-portifolio-microservice
+account: brunovitorprado
+privateKey: "{{lookup('env','HOME')}}/.ssh/stock-exchange.pem"

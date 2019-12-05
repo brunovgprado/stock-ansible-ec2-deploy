@@ -1,0 +1,6 @@
+---
+
+- hosts: stockexchange
+  become: yes
+  roles:
+  - deploy

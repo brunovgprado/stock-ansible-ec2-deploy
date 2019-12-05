@@ -1,4 +1,6 @@
 [local]
-localhost ansible_connection=local ansile_python_interpreter=python gather_facts=false
+localhost ansible_connection=local gather_facts=false
 
-[stock-exchange]
+[stockexchange]
+3.136.85.23
+
