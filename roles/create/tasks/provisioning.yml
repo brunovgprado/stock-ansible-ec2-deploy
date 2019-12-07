@@ -1,25 +1,5 @@
 ---
 
-- name: Creating security group
-  local_action:
-    module: ec2_group
-    name: "{{ security_group }}"
-    description: Security Group Stock-exchange
-    region: "{{ region }}"
-    rules:
-    - proto: tcp
-      from_port: 22
-      to_port: 22
-      cidr_ip: 0.0.0.0/0
-    - proto: tcp
-      from_port: 3001
-      to_port: 3001
-      cidr_ip: 0.0.0.0/0
-    rules_egress:
-    - proto: all
-      cidr_ip: 0.0.0.0/0
-  register: basic_firewall
-
 - name: Creating ec2 instance
   local_action: ec2
     exact_count=1
@@ -31,7 +11,35 @@
     region={{ region }}
     keypair={{ keypair }}    
   register: ec2
-   
+
+- name: Creating security group
+  local_action:
+    module: ec2_group
+    name: "{{ security_group }}"
+    description: Security Group Stock-exchange
+    region: "{{ region }}"
+    rules:
+    - proto: tcp
+      from_port: 22
+      to_port: 22
+      cidr_ip: 0.0.0.0/0    
+    - proto: tcp
+      from_port: 80
+      to_port: 80
+      cidr_ip: 0.0.0.0/0  
+    - proto: tcp
+      from_port: 3001
+      to_port: 3001
+      cidr_ip: 0.0.0.0/0
+    - proto: tcp
+      from_port: 3000
+      to_port: 3000
+      cidr_ip: 0.0.0.0/0                                     
+    rules_egress:
+    - proto: all
+      cidr_ip: 0.0.0.0/0
+  register: basic_firewall
+  
 - name: Adding instance to inventory
   add_host: name={{ item.public_ip}} groups=stock-exchange-new
   with_items: "{{ ec2.instances }}"

@@ -5,3 +5,5 @@ appDir : stock
 repo: stock-portifolio-microservice
 account: brunovitorprado
 privateKey: "{{lookup('env','HOME')}}/.ssh/stock-exchange.pem"
+security_group: stock-exchange
+region: us-east-2
