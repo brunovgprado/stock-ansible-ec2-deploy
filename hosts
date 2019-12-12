@@ -2,7 +2,11 @@
 localhost ansible_connection=local gather_facts=false
 
 [stockexchange]
-18.224.139.241
+
+
+
+
+
 
 
 

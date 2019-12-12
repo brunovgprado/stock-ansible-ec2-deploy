@@ -1,8 +1,9 @@
 ---
 # vars file for deploy
 homeDir: "."
-appDir : stock
-repo: stock-portifolio-microservice
+appDirPurchase : stock/purchase
+appDirEquity : stock/equity
+repoPurchase: stock-portifolio-microservice
 account: brunovitorprado
 privateKey: "{{lookup('env','HOME')}}/.ssh/stock-exchange.pem"
 security_group: stock-exchange

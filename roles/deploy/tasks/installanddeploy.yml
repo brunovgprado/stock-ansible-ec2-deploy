@@ -14,29 +14,48 @@
 - name: Install pm2
   npm: name=pm2 global=yes production=yes
 
-- name: Create APP Directory
-  file: path={{homeDir}}/{{appDir}} state=directory
+- name: Create purchase microservice Directory
+  file: path={{item}} state=directory
+  with_items:
+    - "{{homeDir}}/{{appDirPurchase}}"
+    - "{{homeDir}}/{{appDirEquity}}"
 
 - name: Copy Private Key
   copy: src={{privateKey}} dest={{homeDir}} mode=0600
 
-- name: Cloning project to remote host
+- name: Cloning purchase project to remote host
   git:
     repo: https://github.com/brunovitorprado/stock-portifolio-microservice
-    dest: "{{homeDir}}/{{appDir}}"
+    dest: "{{homeDir}}/{{appDirPurchase}}"
+    force: yes
+  register: git_finished
+
+- name: Cloning equity project to remote host
+  git:
+    repo: https://github.com/brunovitorprado/stock-exchange-equity-microservice
+    dest: "{{homeDir}}/{{appDirEquity}}"
     force: yes
   register: git_finished
 
 - name: Running NPM install
-  npm: path={{homeDir}}/{{appDir}}
+  npm: path={{item}}
+  with_items:
+    - "{{homeDir}}/{{appDirPurchase}}"
+    - "{{homeDir}}/{{appDirEquity}}"
   register: npm_finished
   when: git_finished.changed
 
 - name: Stop APP
-  command: pm2 stop app chdir={{homeDir}}/{{appDir}}
+  command: pm2 stop app chdir={{item}}
+  with_items:
+    - "{{homeDir}}/{{appDirPurchase}}"
+    - "{{homeDir}}/{{appDirEquity}}"
   ignore_errors: yes
 
 - name: Start APP
-  command: pm2 start index.js --name app chdir={{homeDir}}/{{appDir}}
+  command: pm2 start index.js --name app chdir={{item}}
+  with_items:
+    - "{{homeDir}}/{{appDirPurchase}}"
+    - "{{homeDir}}/{{appDirEquity}}"
   ignore_errors: yes
   when: npm_finished.changed
